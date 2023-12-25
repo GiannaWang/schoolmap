@@ -1,3 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<malloc.h>
 #include<string.h>
 #define INFINIFY 65535   //定义无穷大
 #define MaxVertexNum 100    //定义最大定点数
@@ -7,21 +10,21 @@ char Q[MaxVertexNum][MaxVertexNum] = {
  */
 
 char R[MaxVertexNum][MaxVertexNum] = {
-	{" 北门    "},
-	{" 游泳池  "},
-	{" 河东食堂"},
-	{" 文史楼  "},
-	{" 东门    "},
-	{" 体育馆  "},
-	{" 文附楼  "},
-	{" 文科大楼"},
-	{" 篮球场  "},
-	{" 图书馆  "},
-	{" 毛主席像"},
-	{" 理科大楼"},
-	{" 河西食堂"},
-	{" 西北门  "},
-	
+	{"北门"},
+	{"游泳池"},
+	{"河东食堂"},
+	{"文史楼"},
+	{"东门"},
+	{"体育馆"},
+	{"文附楼"},
+	{"文科大楼"},
+	{"篮球场"},
+	{"图书馆"},
+	{"毛主席像"},
+	{"理科大楼"},
+	{"河西食堂"},
+	{"西北门"},
+
 };
 int A[MaxVertexNum][MaxVertexNum] = {
 		{0,152,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY},//1
@@ -37,8 +40,7 @@ int A[MaxVertexNum][MaxVertexNum] = {
 		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,226,0,145,318,INFINIFY},//11
 		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,541,INFINIFY,442,145,0,281,312},//12
 		{INFINIFY,532,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,323,318,281,0,96},//13
-		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,312,96,0},//14
-		//{800,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,300,INFINIFY,INFINIFY,0},
+		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,312,96,0},//14
 };
 int B[MaxVertexNum] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 typedef char DataType;
@@ -201,6 +203,7 @@ void Bestlu(LGraph* G, int z, char R[MaxVertexNum][MaxVertexNum])    ///找寻�
 	}
 	printf("\n");
 }
+
 int input2(int& Nv, int B[MaxVertexNum])              //输入函数2
 {
 	int m, y = 0;
@@ -384,55 +387,42 @@ void AvabilePath(LGraph* G, int Nv, char R[MaxVertexNum][MaxVertexNum], int B[Ma
 		i = input2(Nv, B);
 	}
 }
-void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVertexNum][MaxVertexNum])        //图的修改函数
-{
-	MGraph g;
-	int a,b,c,d,t,i=0,j;
-	char x[100];
-	int w = 0;
-	printf("\n");
-	printf("\n");
-	printf("\t**************修改菜单***************");
-	printf("\n\t**       (1)增加地标节点           **");
-	printf("\n\t**       (2)删除地标节点           **");
-	printf("\n\t*************************************\n");
-	printf("输入你需要查询的菜单选项编号:");
-	a = input3();                                      ///调用input3函数获取值
-	switch (a)                                        ///对数值a进行判断
-	{
-	case 1:
-		printf("输入需要添加的地点名称:");
-		scanf("%s", &x);
-		while (i != Nv)                                  ///判断是否添加的地标节点已存在
-		{
-			if (R != NULL)
-			{
-				for (i = 0; i < Nv; i++)
-					if (strcmp(R[i],x) == 0 )
-					{
-						printf("该地标节点已存在请重新输入:");
-						scanf("%s", &x);
-						break;
-					}
-			}
-			else
-				break;
-		}
-		//B[b - 1] = b;                                     ///将新增的结点添加进B数组
-		R[Nv] = x;   //将新的结点输入R
 
-		for(int i = 0; i <= Nv; i++){
-            A[i][Nv] = INFINIFY;
-            A[Nv][i] = INFINIFY;
-		}
-		A[Nv][Nv] = 0;   //更新距离数组
-		/*printf("输入地标节点的编号和名称[(编号)名称]:");
-		//scanf("%s", &Q[Nv]);
-		printf("输入增加的地标节点与其余地标节点直接连接的路径数目:");
-		scanf("%d", &c);
-		if (b >= Nv)                                      ///如果添加的地标节点编号超过现有的便将该数组进行扩建并将新的行与列进行初始化
-		{
-			for (i = 0; i < MaxVertexNum; i++)
+void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVertexNum][MaxVertexNum]) {
+    MGraph g;
+    int c, d, t, i = 0, j;
+    int w = 0;
+    char x[100];
+    printf("\n");
+    printf("\n");
+    printf("\t**************修改菜单***************");
+    printf("\n\t**       (1)增加地标节点           **");
+    printf("\n\t**       (2)删除地标节点           **");
+    printf("\n\t*************************************\n");
+    printf("输入你需要查询的菜单选项编号:");
+    int a = input3();  ///调用input3函数获取值
+
+    switch (a)          ///对数值a进行判断
+    {
+    case 1:
+        printf("输入需要添加的地点名称:");
+        scanf("%s", &x);
+
+        while (i != Nv)                                  ///判断是否添加的地标节点已存在
+        {
+            if (R != NULL) {
+                for (i = 0; i < Nv; i++)
+                    if (strcmp(R[i], x) == 0) {
+                        printf("该地标节点已存在请重新输入:");
+                        scanf("%s", &x);
+                        break;
+                    }
+            } else
+                break;
+        }
+
+        strcpy(R[Nv], x);  ///将新增的结点添加进R数组
+        for (i = 0; i < MaxVertexNum; i++)
 				for (j = 0; j < MaxVertexNum; j++)
 				{
 					if (i == Nv)
@@ -442,52 +432,56 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVerte
 					if (i == Nv && j == Nv)
 						A[i][j] = 0;
 				}
-			Nv = Nv + 1; Ne = Ne + c;                              ///将该二维数组的信息进行更新
-		}
+			B[Nv] = Nv + 1;
+			Nv = Nv + 1;
 
-		while (w < c)
-		{
-
-			printf("依次输入该地点能直接到达的地点编号和两地标之间的距离\n");
-			printf("输入格式:编号、距离之间用英文逗号隔开(x,y):");
-			scanf("%d,%d", &d, &t);               ///输入新增地标节点的编号、距离和终止值
-			for (i = 0; i < MaxVertexNum; i++)                       ///将该节点对应的边进行添加
-				for (j = 0; j < MaxVertexNum; j++)
-				{
-					if (i == (d - 1) && j == (b - 1))
-					{
-						A[i][j] = t;
-						A[j][i] = t;
-						w++;
-					}
-				}
-		}
-		*/
-		printf("已结束输入，输出新生成的图:\n");
-		CreateGraph(g, A, Nv, Ne);
-		PutMGraph(g);
-		break;
+        printf("已结束输入，输出新生成的图:\n");
+        CreateGraph(g, A, Nv, Ne);
+        PutMGraph(g);
+        break;
 	case 2:
-	    /*
-		printf("请输入需要删除的地标节点：");
-		b = input2(Nv, B) - 1;                              ///通过调用函数input2获取值
-		for (i = 0; i < MaxVertexNum; i++)                           ///将想要删除的节点进行初始化删除
-			for (j = 0; j < MaxVertexNum; j++)
-			{
-				if (i == b)
-					A[i][j] = INFINIFY;
-				if (j == b)
-					A[i][j] = INFINIFY;
-			}
-		for (i = 0; i < Nv; i++)                              ///将存放节点信息和节点编号的数组Q、b进行更新
-			if (i == b || i > b)
-			{
-				strcpy(Q[i], Q[i + 1]);                  ///因为维数组存放的为字符元素所以调用函数strcpy将以删除节点后的结点信息向前覆盖
-				B[i] = B[i + 1];
-			}
-		CreateGraph(g, A, Nv, Ne);
-		PutMGraph(g);
-		*/
+	    printf("请输入需要删除的地标节点：");
+	    scanf("%s", &x);
+
+
+                for (i = 0; i < Nv; i++)
+                {
+                    if (strcmp(R[i], x) == 0) {     ///判断是否添加的地标节点已存在
+                        int k = i;
+
+                        printf("该节点编号是%d：",i);
+                        for (int i = 0; i < Nv; i++)                           ///将想要删除的节点进行初始化删除
+                            for (int j = 0; j < Nv; j++)
+                            {
+                                if ((i == k )&& (A[i][j] != INFINIFY)){
+                                    A[i][j] = INFINIFY;
+                                    Ne--;
+                                }
+
+                                if ((j == k) && (A[i][j] != INFINIFY)){
+                                    A[i][j] = INFINIFY;
+                                    Ne--;
+                                }
+
+                            }
+                            /*
+                            for (i = 0; i < Nv; i++) {                             ///将存放节点信息和节点编号的数组Q、b进行更新
+                                if (i == k || i > k)
+                                {
+                                    strcpy(R[i], R[i + 1]);                  ///因为维数组存放的为字符元素所以调用函数strcpy将以删除节点后的结点信息向前覆盖
+                                    //B[i] = B[i + 1];
+                                }
+                            }
+                            */
+                        CreateGraph(g, A, Nv, Ne);
+                        PutMGraph(g);
+                        break;
+                    }
+            }
+            if(i = Nv){
+                printf("该地标节点不存在");
+            }
+
 		break;
 	}
 }
@@ -581,7 +575,7 @@ int main() {
 			x = input1();
 			break;
 		case 7:
-			modify(A, Nv, Ne, R);修改
+			modify(A, Nv, Ne, R);
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
 			Caidan();
