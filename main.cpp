@@ -1,66 +1,27 @@
-#define _CRT_SECURE_NO_WARNINGS 1
-#include<stdio.h>
-#include<malloc.h>
 #include<string.h>
 #define INFINIFY 65535   //定义无穷大
 #define MaxVertexNum 100    //定义最大定点数
 int visited[MaxVertexNum];
+/*
 char Q[MaxVertexNum][MaxVertexNum] = {
-    {" 1  北门  "},
-	{" 2  游泳池        "},
-	{" 3  河东食堂       "},
-	{" 4  文史楼       "},
-	{" 5  东门          "},
-	{" 6  体育馆       "},
-	{" 7  文附楼          "},
-	{" 8  文科大楼          "},
-	{" 9  篮球场       "},
-	{" 10 图书馆       "},
-	{" 11 毛主席像          "},
-	{" 12 理科大楼        "},
-	{" 13 河西食堂            "},
-	{" 14 西北门          "},
-	/*
-	{" 1  新生公寓(java)  住宿环境好，离教学楼近"},
-	{" 2  学二食堂        伙食好，种类多样，价格便宜"},
-	{" 3  f栋教学楼       计算机学院的学生上课的集中地"},
-	{" 4  e栋教学楼       商管学生上课的集中地"},
-	{" 5  图书馆          造型优美，学习氛围浓厚"},
-	{" 6  c栋教学楼       翻转教室和实验室的集中地"},
-	{" 7  报告厅          场地超级大，是举行大型学术的场所"},
-	{" 8  运动场          是个散步，运动，看日落的好地方" },
-	{" 9  B栋教学楼       计算机系办公楼"},
-	{" 10 A栋教学楼       是学校创建最早的教学楼之一"},
-	{" 11 行政楼          行政办公大楼"},
-	{" 12 继教公寓        很安静幽美的地方"},
-	{" 13 雨湖            湖水清澈周边环境很美"},
-	{" 14 足球场          场地不算很大，但足够给喜欢踢足球的人过过瘾"},
-	{" 15 D栋教学楼       国际交流办公处"},
-	{" 16 龙翔食堂        饭菜很农家，给人一种家的感觉"},
-	{" 17 继续教育学院    离公交站最近，坐车很方便"},
-	{" 18 国际交流中心    商务英语学生上课的地方,可以经常看到外国人"},
-	*/
-};
+ */
 
 char R[MaxVertexNum][MaxVertexNum] = {
-	{" 1  北门  "},
-	{" 2  游泳池        "},
-	{" 3  河东食堂       "},
-	{" 4  文史楼       "},
-	{" 5  东门          "},
-	{" 6  体育馆       "},
-	{" 7  文附楼          "},
-	{" 8  文科大楼          "},
-	{" 9  篮球场       "},
-	{" 10 图书馆       "},
-	{" 11 毛主席像          "},
-	{" 12 理科大楼        "},
-	{" 13 河西食堂            "},
-	{" 14 西北门          "},
-	//{" 15 D栋教学楼       "},
-	//{" 16 龙翔食堂        "},
-	//{" 17 继续教育学院    "},
-	//{" 18 国际交流中心    "},
+	{" 北门    "},
+	{" 游泳池  "},
+	{" 河东食堂"},
+	{" 文史楼  "},
+	{" 东门    "},
+	{" 体育馆  "},
+	{" 文附楼  "},
+	{" 文科大楼"},
+	{" 篮球场  "},
+	{" 图书馆  "},
+	{" 毛主席像"},
+	{" 理科大楼"},
+	{" 河西食堂"},
+	{" 西北门  "},
+	
 };
 int A[MaxVertexNum][MaxVertexNum] = {
 		{0,152,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY},//1
@@ -70,16 +31,13 @@ int A[MaxVertexNum][MaxVertexNum] = {
 		{INFINIFY,INFINIFY,INFINIFY,261,0,187,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY},//5
 		{INFINIFY,INFINIFY,INFINIFY,348,187,0,198,162,412,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY},//6
 		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,198,0,47,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY},//7
-		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,162,0,47,346,437,INFINIFY,541,INFINIFY,INFINIFY},//8
+		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,162,47,0,346,437,INFINIFY,541,INFINIFY,INFINIFY},//8
 		{INFINIFY,143,INFINIFY,96,INFINIFY,412,INFINIFY,346,0,112,INFINIFY,INFINIFY,INFINIFY,INFINIFY},//9
 		{INFINIFY,98,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,437,112,0,226,442,323,INFINIFY},//10
 		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,226,0,145,318,INFINIFY},//11
 		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,541,INFINIFY,442,145,0,281,312},//12
 		{INFINIFY,532,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,323,318,281,0,96},//13
 		{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,312,96,0},//14
-		//{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,1000,0,500,INFINIFY,300},
-		//{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,500,0,100,INFINIFY},
-		//{INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,800,INFINIFY,100,0,INFINIFY},
 		//{800,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,INFINIFY,300,INFINIFY,INFINIFY,0},
 };
 int B[MaxVertexNum] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14};
@@ -131,10 +89,10 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char Q[MaxVerte
 void  Caidan()//菜单函数
 {
 	printf(" \t************************欢迎使用校园导航系统****************************");
-	printf(" \n\t**                      欢迎来到华东师范大学                          **");
+	printf(" \n\t**                      欢迎来到广东东软学院                          **");
 	printf(" \n\t**                         菜单选择                                   **");
 	printf(" \n\t**                                                                    **");
-	printf(" \n\t**      1、学校地图查看（先bang掉）         2、查看浏览路线               **");
+	printf(" \n\t**      1、学校地图查看 (先bang掉）     2、查看浏览路线               **");
 	printf(" \n\t**                                                                    **");
 	printf(" \n\t**      3 查看各地点间最短路径          4、景点信息查询               **");
 	printf(" \n\t**                                                                    **");
@@ -387,12 +345,18 @@ void Shortlu(MGraph g, int z, int& Nv, int B[MaxVertexNum], char R[MaxVertexNum]
 	PutShortlu(g, dist, path, S, z, Nv, B, R);	//输出最短路径
 }
 
-void place(char Q[MaxVertexNum][MaxVertexNum], int& Nv)             ///景点信息查询
+void place(int A[MaxVertexNum][MaxVertexNum], int Nv)   //问题1，输出基本信息
 {
-	int i;
-	for (i = 0; i < Nv; i++)
+	int k = 0;
+	for (int i = 0; i < Nv; i++)
 	{
-		printf("%s\n", Q[i]);
+		for(int j = i; j < Nv; j++)
+		{
+			if(A[i][j] != INFINIFY && i != j){
+                k++;
+                printf("%d %s %s %d\n", k, &R[i], &R[j], A[i][j]);
+			}
+		}
 
 	}
 }
@@ -420,10 +384,11 @@ void AvabilePath(LGraph* G, int Nv, char R[MaxVertexNum][MaxVertexNum], int B[Ma
 		i = input2(Nv, B);
 	}
 }
-void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char Q[MaxVertexNum][MaxVertexNum], int B[MaxVertexNum])        //图的修改函数
+void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVertexNum][MaxVertexNum])        //图的修改函数
 {
 	MGraph g;
 	int a,b,c,d,t,i=0,j;
+	char x[100];
 	int w = 0;
 	printf("\n");
 	printf("\n");
@@ -436,26 +401,33 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char Q[MaxVerte
 	switch (a)                                        ///对数值a进行判断
 	{
 	case 1:
-		printf("输入需要添加的地标节点的编号:");
-		scanf("%d", &b);
+		printf("输入需要添加的地点名称:");
+		scanf("%s", &x);
 		while (i != Nv)                                  ///判断是否添加的地标节点已存在
 		{
-			if (B != NULL)
+			if (R != NULL)
 			{
 				for (i = 0; i < Nv; i++)
-					if (B[i] == b)
+					if (strcmp(R[i],x) == 0 )
 					{
 						printf("该地标节点已存在请重新输入:");
-						scanf("%d", &b);
+						scanf("%s", &x);
 						break;
 					}
 			}
 			else
 				break;
 		}
-		B[b - 1] = b;                                     ///将新增的结点添加进B数组
-		printf("输入地标节点的编号和名称[(编号)名称]:");
-		scanf("%s", &Q[Nv]);
+		//B[b - 1] = b;                                     ///将新增的结点添加进B数组
+		R[Nv] = x;   //将新的结点输入R
+
+		for(int i = 0; i <= Nv; i++){
+            A[i][Nv] = INFINIFY;
+            A[Nv][i] = INFINIFY;
+		}
+		A[Nv][Nv] = 0;   //更新距离数组
+		/*printf("输入地标节点的编号和名称[(编号)名称]:");
+		//scanf("%s", &Q[Nv]);
 		printf("输入增加的地标节点与其余地标节点直接连接的路径数目:");
 		scanf("%d", &c);
 		if (b >= Nv)                                      ///如果添加的地标节点编号超过现有的便将该数组进行扩建并将新的行与列进行初始化
@@ -490,11 +462,13 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char Q[MaxVerte
 					}
 				}
 		}
+		*/
 		printf("已结束输入，输出新生成的图:\n");
 		CreateGraph(g, A, Nv, Ne);
 		PutMGraph(g);
 		break;
 	case 2:
+	    /*
 		printf("请输入需要删除的地标节点：");
 		b = input2(Nv, B) - 1;                              ///通过调用函数input2获取值
 		for (i = 0; i < MaxVertexNum; i++)                           ///将想要删除的节点进行初始化删除
@@ -513,6 +487,7 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char Q[MaxVerte
 			}
 		CreateGraph(g, A, Nv, Ne);
 		PutMGraph(g);
+		*/
 		break;
 	}
 }
@@ -539,7 +514,7 @@ int main() {
 	MGraph g;
 	LGraph* G;
 
-	int Nv = 18, Ne = 24;
+	int Nv = 14, Ne = 24;
 	int x, z;
 	x = input1();
 	while (1)
@@ -548,7 +523,7 @@ int main() {
 		{
 		case 1:
 			printf("\n学校地图查看:");
-			map();
+			//map();
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
 			Caidan();
@@ -580,7 +555,7 @@ int main() {
 		case 4:
 			printf("\n地点信息查看:");
 			printf("\n");
-			place(Q, Nv);
+			place(A, Nv);
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
 			Caidan();
@@ -606,7 +581,7 @@ int main() {
 			x = input1();
 			break;
 		case 7:
-			modify(A, Nv, Ne, Q, B);
+			modify(A, Nv, Ne, R);修改
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
 			Caidan();
