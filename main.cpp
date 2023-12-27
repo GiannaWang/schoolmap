@@ -94,9 +94,9 @@ void  Caidan()//菜单函数
 	printf(" \n\t**                      欢迎来到广东东软学院                          **");
 	printf(" \n\t**                         菜单选择                                   **");
 	printf(" \n\t**                                                                    **");
-	printf(" \n\t**      1、学校地图查看 (先bang掉）     2、查看浏览路线               **");
+	printf(" \n\t**      1、地点信息查看                 2、查看浏览路线 ！            **");
 	printf(" \n\t**                                                                    **");
-	printf(" \n\t**      3 查看各地点间最短路径          4、景点信息查询               **");
+	printf(" \n\t**      3、修改路径信息                 4、查看各地点间最短路径       **");
 	printf(" \n\t**                                                                    **");
 	printf(" \n\t**      5、查询各地点间可行路径         6、打印邻接矩阵               **");
 	printf(" \n\t**                                                                    **");
@@ -276,76 +276,72 @@ void PutMGraph(MGraph g)                 //输出邻接矩阵g
 			if (g.G[i][j] != INFINIFY)
 				printf("%4d", g.G[i][j]);
 			else
-				printf("%4s", "∞");
+				printf(" %4s ", "∞");
 		printf("\n");
 	}
 }
-void PutShortlu(MGraph g, int dist[], int path[], int S[], int z, int& Nv, int B[MaxVertexNum], char R[MaxVertexNum][MaxVertexNum])   //输出从顶点v出发的所有最短路径
-{
-	int i, j, k;
-	int apath[MaxVertexNum], d;					                           //存放一条最短路径(逆向)及其顶点个数
-	printf("输入你要到达的地点：");
-	i = input2(Nv, B);                                                 //循环输出从顶点v到i的路径
-	i = i - 1;
-	if (S[i] == 1 && i != z)
-	{
-		printf("  从地点%s到地点%s的最短路径长度为:%d\n 路径为:", R[z], R[i], dist[i]);
-		d = 0;
-		apath[d] = i;			                                       //添加路径上的终点
-		k = path[i];
-		if (k == -1)				                                   //没有路径的情况
-			printf("无路径\n");
-		else						                               //存在路径时输出该路径
-		{
-			while (k != z)
-			{
-				d++;
-				apath[d] = k;
-				k = path[k];
-			}
-			d++;
-			apath[d] = z;		                                       //添加路径上的起点
-			printf("%s", R[apath[d]]);	                           //先输出起点
-			for (j = d - 1; j >= 0; j--)                               	   //再输出其他顶点
-				printf("->%s", R[apath[j]]);
-			printf("\n");
-		}
-	}
+void printShortestPath(int src, int dest, int dist[], int path[], char R[MaxVertexNum][MaxVertexNum]) {
+    //cout << "1" << endl;
+    int stack[MaxVertexNum];
+    int top = 0;
+    int p = dest;
+    while (p != src) {
+        //cout << p << endl;
+        stack[top++] = p;
+        p = path[p];
+    }
+    printf("最短路径为：");
+    for (int i = top - 1; i >= 0; --i) {
+        printf("%s", R[stack[i]]);
+        if (i > 0) printf(" -> ");
+    }
+    printf("\n路径长度为：%d\n", dist[dest]);
 }
-void Shortlu(MGraph g, int z, int& Nv, int B[MaxVertexNum], char R[MaxVertexNum][MaxVertexNum])//找寻最短路径函数
-{
-	int dist[MaxVertexNum], path[MaxVertexNum];
-	int S[MaxVertexNum];			        //S[i]=1表示顶点i在S中, S[i]=0表示顶点i在U中
-	int Mindis, i, j, u;
-	for (i = 0; i < g.Ne; i++)
-	{
-		dist[i] = g.G[z][i];	//距离初始化
-		S[i] = 0;					//S[]置空
-		if (g.G[z][i] < INFINIFY)	//路径初始化
-			path[i] = z;			//顶点z到顶点i有边时，置顶点i的前一个顶点为z
-		else
-			path[i] = -1;			//顶点z到顶点i没边时，置顶点i的前一个顶点为-1
-	}
-	S[z] = 1; path[z] = 0;			//源点编号v放入S中
-	for (i = 0; i < g.Nv - 1; i++)			//循环直到所有顶点的最短路径都求出
-	{
-		Mindis = INFINIFY;				//Mindis置最大长度初值
-		for (j = 0; j < g.Nv; j++)		//选取不在S中（即U中）且具有最小最短路径长度的顶点u
-			if (S[j] == 0 && dist[j] < Mindis)
-			{
-				u = j;
-				Mindis = dist[j];
-			}
-		S[u] = 1;					//顶点u加入S中
-		for (j = 0; j < g.Nv; j++)		//修改不在S中（即U中）的顶点的最短路径
-			if (S[j] == 0)
-				if (g.G[u][j] < INFINIFY && dist[u] + g.G[u][j] < dist[j])
-				{
-					dist[j] = dist[u] + g.G[u][j];
-					path[j] = u;
-				}
-	}
-	PutShortlu(g, dist, path, S, z, Nv, B, R);	//输出最短路径
+
+void Dijkstra(MGraph g, int src, int dest, int dist[], int path[]) {
+    int visited[MaxVertexNum] = {0}; // 标记顶点是否被访问
+    int i, j, k, min;
+
+    for (i = 0; i < g.Nv; ++i) {
+        dist[i] = g.G[src][i]; // 初始化距离
+        //cout << dist[i] << endl;
+        path[i] = (dist[i] < INFINIFY) ? src : -1; // 初始化路径
+    }
+
+    visited[src] = 1; // 标记源顶点已访问
+
+    for (i = 0; i < g.Nv - 1; ++i) {
+        min = INFINIFY;
+        k = -1;
+
+        // 选择一个距离源点最近的未访问顶点
+        for (j = 0; j < g.Nv; ++j) {
+            if (!visited[j] && dist[j] < min) {
+                min = dist[j];
+                k = j;
+            }
+        }
+
+        if (k == -1) // 如果找不到未访问的顶点，退出循环
+            break;
+
+        visited[k] = 1; // 标记顶点 k 已访问
+
+        // 更新距离和路径
+        for (j = 0; j < g.Nv; ++j) {
+            if (!visited[j] && g.G[k][j] < INFINIFY) {
+                if (dist[k] + g.G[k][j] < dist[j]) {
+                    dist[j] = dist[k] + g.G[k][j];
+                    path[j] = k;
+                }
+            }
+        }
+    }
+    for (j = 0; j < g.Nv; ++j)
+    {
+        //cout << path[j] << endl;
+    }
+
 }
 
 void place(int A[MaxVertexNum][MaxVertexNum], int Nv)   //问题1，输出基本信息
@@ -366,10 +362,12 @@ void place(int A[MaxVertexNum][MaxVertexNum], int Nv)   //问题1，输出基本
 void AvabilePath(LGraph* G, int Nv, char R[MaxVertexNum][MaxVertexNum], int B[MaxVertexNum])                    ///输出各地点间可行路径函数
 {
 
-	printf("输入你所需要查询的地点坐标，返回菜单请输入(88):");
+	printf("输入你所需要查询的地点名称:");
 	ENode* p;
-	int i, j;
-	i = input2(Nv, B);                                                               ///输入需要查询地标的编号
+	//char x[100], y[100];
+	int i = input2(Nv, B);
+	int j;
+                                                            ///输入需要查询地标的编号
 	while (i != 88)                                                                ///判断输入值是否为88，是则返回主菜单
 	{
 		p = G->Adjlist[i - 1].FirstEdge;                                                ///指向需要查询地点的第一条边
@@ -387,8 +385,23 @@ void AvabilePath(LGraph* G, int Nv, char R[MaxVertexNum][MaxVertexNum], int B[Ma
 		i = input2(Nv, B);
 	}
 }
+int isExist(int& Nv,char R[MaxVertexNum][MaxVertexNum],char x[100])  ///判断输入的地点是否已存在
+{
+    int i = 0;
+    while (i != Nv)
+    {
+        if (R != NULL) {
+            for (i = 0; i < Nv; i++)
+                if (strcmp(R[i], x) == 0) {
+                    return i;       ///返回字符串x所在的位置
+                }
+        } else
+            return -1;
+    }
+    return -1;          ///出界或数组为空，都返回-1
+}
 
-void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVertexNum][MaxVertexNum]) {
+ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVertexNum][MaxVertexNum]) {
     MGraph g;
     int c, d, t, i = 0, j;
     int w = 0;
@@ -408,17 +421,10 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVerte
         printf("输入需要添加的地点名称:");
         scanf("%s", &x);
 
-        while (i != Nv)                                  ///判断是否添加的地标节点已存在
+        if(isExist(Nv, R, x) != -1)       ///判断输入的地点是否已经存在
         {
-            if (R != NULL) {
-                for (i = 0; i < Nv; i++)
-                    if (strcmp(R[i], x) == 0) {
-                        printf("该地标节点已存在请重新输入:");
-                        scanf("%s", &x);
-                        break;
-                    }
-            } else
-                break;
+            printf("该地标节点已存在请重新输入:");
+            scanf("%s", &x);
         }
 
         strcpy(R[Nv], x);  ///将新增的结点添加进R数组
@@ -439,50 +445,151 @@ void modify(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVerte
         CreateGraph(g, A, Nv, Ne);
         PutMGraph(g);
         break;
+
 	case 2:
-	    printf("请输入需要删除的地标节点：");
-	    scanf("%s", &x);
+        printf("请输入需要删除的地标节点：");
+        scanf("%s", &x);
+        int k = isExist(Nv, R, x);
+        while (k == -1) /// 地点不存在则重新输入
+        {
+            printf("该地点不存在，请重新输入：");
+            scanf("%s", &x);
+            k = isExist(Nv, R, x);
+        }
+
+        for (int i = k; i < Nv - 1; i++) /// 从R数组中删除结点
+        {
+            strcpy(R[i], R[i + 1]);
+        }
+
+        for (int i = 0; i < Nv; i++)
+        {
+            for (int j = k; j < Nv - 1; j++) /// 从A数组中删除结点对应的行和列
+            {
+                A[i][j] = A[i][j + 1];
+            }
+            A[i][Nv - 1] = INFINIFY; /// 将结点对应的列初始化为无穷大
+        }
+
+        for (int i = k; i < Nv - 1; i++)
+        {
+            for (int j = 0; j < Nv; j++) /// 从A数组中删除结点对应的行
+            {
+                A[i][j] = A[i + 1][j];
+            }
+        }
+
+        Nv--; /// 更新顶点数
+        Ne -=  Nv - k; /// 更新边数，每删除一个节点，相关边数减2
+
+        CreateGraph(g, A, Nv, Ne);
+        PutMGraph(g);
+
+        break;
+	}
+}
+
+void path(int A[MaxVertexNum][MaxVertexNum], int& Nv, int& Ne, char R[MaxVertexNum][MaxVertexNum]) {
+    MGraph g;
+    int d, m,n, i = 0, j;
+    int w = 0;
+    char x[100],y[100];
+    printf("\n");
+    printf("\n");
+    printf("\t**************修改菜单***************");
+    printf("\n\t**       (1)增加路径           **");
+    printf("\n\t**       (2)删除路径           **");
+    printf("\n\t*************************************\n");
+    printf("输入你需要查询的菜单选项编号:");
+    int a = input3();  ///调用input3函数获取值
+
+    switch (a)          ///对数值a进行判断
+    {
+    case 1:
+        printf("输入需要添加路径的两个地点名称以及路径长度:");
+        scanf("%s %s %d", &x,&y,&d);
 
 
+
+            if (R != NULL) {
                 for (i = 0; i < Nv; i++)
-                {
-                    if (strcmp(R[i], x) == 0) {     ///判断是否添加的地标节点已存在
-                        int k = i;
-
-                        printf("该节点编号是%d：",i);
-                        for (int i = 0; i < Nv; i++)                           ///将想要删除的节点进行初始化删除
-                            for (int j = 0; j < Nv; j++)
-                            {
-                                if ((i == k )&& (A[i][j] != INFINIFY)){
-                                    A[i][j] = INFINIFY;
-                                    Ne--;
-                                }
-
-                                if ((j == k) && (A[i][j] != INFINIFY)){
-                                    A[i][j] = INFINIFY;
-                                    Ne--;
-                                }
-
-                            }
-                            /*
-                            for (i = 0; i < Nv; i++) {                             ///将存放节点信息和节点编号的数组Q、b进行更新
-                                if (i == k || i > k)
-                                {
-                                    strcpy(R[i], R[i + 1]);                  ///因为维数组存放的为字符元素所以调用函数strcpy将以删除节点后的结点信息向前覆盖
-                                    //B[i] = B[i + 1];
-                                }
-                            }
-                            */
-                        CreateGraph(g, A, Nv, Ne);
-                        PutMGraph(g);
-                        break;
+                    if (strcmp(R[i], x) == 0) {
+                        m = i;
+                        printf("第一个地点编号为%d:",m);
+                        //continue;
                     }
-            }
-            if(i = Nv){
+
+            } else
+                break;
+        if (R != NULL) {
+                for (i = 0; i < Nv; i++)
+                    if (strcmp(R[i], y) == 0) {
+                        n = i;
+                        printf("第二个地点编号为%d:",n);
+                        //continue;
+                    }
+
+            } else
+                break;
+
+        if(m == Nv || n == Nv) printf("抱歉，您输入的地址有误！");
+        else Ne = Ne + 1;
+
+        while(w<1)
+        {
+           for (i = 0; i < MaxVertexNum; i++)                       ///将该节点对应的边进行添加
+				for (j = 0; j < MaxVertexNum; j++)
+				{
+					if (i == m && j == n)
+					{
+						A[i][j] = d;
+						A[j][i] = d;
+						w++;
+					}
+				}
+
+
+        }
+        printf("已结束输入，输出新生成的图:\n");
+        CreateGraph(g, A, Nv, Ne);
+        PutMGraph(g);
+        break;
+	case 2:
+	    printf("请输入需要删除路径的两个地点：");
+	    scanf("%s %s", &x, &y);
+        for (i = 0; i < Nv; i++)
+        {
+            if (strcmp(R[i], x) == 0)    ///判断是否添加的地标节点已存在
+                m= i;
+        }
+        for (i = 0; i < Nv; i++)
+        {
+            if (strcmp(R[i], y) == 0)
+                n = i;
+        }
+        if(m == Nv || n == Nv){
                 printf("该地标节点不存在");
+        } else {
+
+            printf("该节点编号是%d, %d", m, n);
+            for (int i = 0; i < Nv; i++)                           ///将想要删除的节点进行初始化删除
+            for (int j = 0; j < Nv; j++)
+            {
+                if (i == m && j == n){
+                    A[i][j] = INFINIFY;
+                    A[j][i] = INFINIFY;
+                    Ne--;
+                    break;
+                }
+
             }
+        CreateGraph(g, A, Nv, Ne);
+        PutMGraph(g);
 
 		break;
+
+        }
+
 	}
 }
 
@@ -516,14 +623,16 @@ int main() {
 		switch (x)
 		{
 		case 1:
-			printf("\n学校地图查看:");
-			//map();
+			printf("\n地点信息查看:");
+			printf("\n");
+			place(A, Nv);
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
 			Caidan();
 			x = input1();
 			break;
 		case 2:
+		    /*
 			printf("输入你所在的位置，为你规划浏览路线：");
 			CreateLGraph(G, A, Nv, Ne);
 			z = input2(Nv, B) - 1;
@@ -534,8 +643,18 @@ int main() {
 			printf("\n");
 			Caidan();
 			x = input1();
+			*/
 			break;
-		case 3:
+		case 3://修改路径
+			path(A, Nv, Ne, R);
+			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
+			printf("\n");
+			Caidan();
+			x = input1();
+			break;
+
+		case 4:
+		    /*
 			printf("输入你所在的位置，为你规划最短路径：");
 			CreateGraph(g, A, Nv, Ne);
 			z = input2(Nv, B) - 1;
@@ -545,11 +664,28 @@ int main() {
 			Caidan();
 			x = input1();
 			break;
+			*/
+			printf("输入两个地点，为您规划最短路径");
+			CreateGraph(g, A, Nv, Ne);
+			//z = input2(Nv, B) - 1;
+			int dist[MaxVertexNum];
+			int path[MaxVertexNum];
+            int src,dest;
+            char place1[MaxVertexNum], place2[MaxVertexNum];
+            scanf("%s %s", place1, place2);
+            for (int i = 0; i < Nv; ++i) {
+                if (strcmp(R[i], place1) == 0) {
+                    src = i;
+                }
+                if (strcmp(R[i], place2) == 0) {
+                    dest = i;
+                }
+            }
 
-		case 4:
-			printf("\n地点信息查看:");
-			printf("\n");
-			place(A, Nv);
+			Dijkstra(g, src, dest, dist, path);
+
+            printShortestPath(src, dest,dist, path, R);
+            //cout << "1" << endl;
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
 			Caidan();
@@ -574,7 +710,7 @@ int main() {
 			Caidan();
 			x = input1();
 			break;
-		case 7:
+		case 7://修改地图信息
 			modify(A, Nv, Ne, R);
 			printf("\n已返回主菜单，请输入需要查询的菜单栏选项:\n");
 			printf("\n");
